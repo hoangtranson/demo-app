@@ -1,70 +1,100 @@
+import React from 'react';
+import MaterialTable from 'material-table';
+import { tableIcons } from '../components/table-icons';
 import Layout from '../components/Layout';
-import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
+// import Todos from '../components/Todos';
+// import Link from 'next/link';
+// import fetch from 'isomorphic-unfetch';
+// import useSWR from 'swr';
 
-import useSWR from 'swr';
 
-function fetcher(url) {
-    return fetch(url).then(r => r.json());
-}
-
-// const indexPageContent = <p>Hello Next.js</p>;
-
-// export default function Index() {
-//     return <Layout content={indexPageContent} />;
+// function fetcher(url) {
+//     return fetch(url).then(r => r.json());
 // }
 
-const TodoList = props => {
-    const todos = props.todos;
 
-    if (todos) {
-        return (
-            <ul>
-                {todos.map(todo => (
-                    <li key={todo.id}>
-                        <Link href="/todo/[id]" as={`/todo/${todo.id}`}>
-                            <a>{todo.title}</a>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        )
-    }
-    return (
-        <ul>
-            <li>Loading ...</li>
-        </ul>
-    )
+// export default function Index() {
+//     const { data, error } = useSWR('/api/todos', fetcher);
+//     let todos = data;
 
-}
+//     if (!data) todos = [];
+//     if (error) todos = [];
+
+//     return (
+//         <Layout>
+//             <Todos />
+//         </Layout>
+//     );
+// }
 
 export default function Index() {
-    const { data, error } = useSWR('/api/todos', fetcher);
-    let todos = data;
-
-    if (!data) todos = [];
-    if (error) todos = [];
+    const [state, setState] = React.useState({
+        columns: [
+            { title: 'Name', field: 'name' },
+            { title: 'Surname', field: 'surname' },
+            { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
+            {
+                title: 'Birth Place',
+                field: 'birthCity',
+                lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
+            },
+        ],
+        data: [
+            { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
+            {
+                name: 'Zerya Betül',
+                surname: 'Baran',
+                birthYear: 2017,
+                birthCity: 34,
+            },
+        ],
+    });
 
     return (
         <Layout>
-            <h1>ToDo List</h1>
-            <TodoList todos={todos} />
-            <style jsx>{`
-                li {
-                    list-style: none;
-                    margin: 5px 0;
-                }
-
-                a {
-                    text-decoration: none;
-                    color: blue;
-                    font-family: 'Arial';
-                }
-
-                a:hover {
-                    opacity: 0.6;
-                }
-            `}</style>
+            <MaterialTable
+                title="Editable Example"
+                icons={tableIcons}
+                columns={state.columns}
+                data={state.data}
+                editable={{
+                    onRowAdd: newData =>
+                        new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve();
+                                setState(prevState => {
+                                    const data = [...prevState.data];
+                                    data.push(newData);
+                                    return { ...prevState, data };
+                                });
+                            }, 600);
+                        }),
+                    onRowUpdate: (newData, oldData) =>
+                        new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve();
+                                if (oldData) {
+                                    setState(prevState => {
+                                        const data = [...prevState.data];
+                                        data[data.indexOf(oldData)] = newData;
+                                        return { ...prevState, data };
+                                    });
+                                }
+                            }, 600);
+                        }),
+                    onRowDelete: oldData =>
+                        new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve();
+                                setState(prevState => {
+                                    const data = [...prevState.data];
+                                    data.splice(data.indexOf(oldData), 1);
+                                    return { ...prevState, data };
+                                });
+                            }, 600);
+                        }),
+                }}
+            />
         </Layout>
     );
 }
