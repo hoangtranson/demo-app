@@ -4,7 +4,13 @@
   "description": "Simple App to demonstrate some tech stuff",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commit": "npx git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
   },
   "repository": {
     "type": "git",
@@ -16,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/hoangtranson/demo-app/issues"
   },
-  "homepage": "https://github.com/hoangtranson/demo-app#readme"
+  "homepage": "https://github.com/hoangtranson/demo-app#readme",
+  "devDependencies": {
+    "git-cz": "^4.2.0"
+  }
 }
