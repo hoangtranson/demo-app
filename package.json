@@ -4,6 +4,9 @@
   "description": "Simple App to demonstrate some tech stuff",
   "main": "index.js",
   "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "npx git-cz"
   },
