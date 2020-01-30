@@ -39,7 +39,7 @@ const TodoList = props => {
 }
 
 export default function Index() {
-    const { data, error } = useSWR('http://localhost:3000/api/todos', fetcher);
+    const { data, error } = useSWR('/api/todos', fetcher);
     let todos = data;
 
     if (!data) todos = [];
